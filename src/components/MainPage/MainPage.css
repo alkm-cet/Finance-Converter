@@ -1,0 +1,15 @@
+.MainPage {
+    width: 100%;
+    height: auto;
+    /* border: 1px solid black; */
+    padding: 20px;
+
+    display: flex;
+
+}
+
+@media(max-width:1200px) {
+    .MainPage {
+        flex-direction: column;
+    }
+}
