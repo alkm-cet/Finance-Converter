@@ -6,14 +6,20 @@ import { FinanceContext } from '../../../context/FinanceContext';
 import dollar from '../../../images/dollar.png'
 
 function Header() {
-    const { balance } = useContext(FinanceContext)
+    const { financeArray } = useContext(FinanceContext)
 
     return (
         <div className='Header'>
             <h1>Finance Tracker</h1>
             <div className="balanceContainer">
                 <img src={dollar} style={{ width: '50px' }} alt="" />
-                <h1>{balance}</h1>
+                <h2>
+                    {
+                        financeArray.reduce((acc, curr) => {
+                            return acc + (curr.amount * (curr.type === 'Income' ? 1 : -1))
+                        }, 0)
+                    }
+                </h2>
             </div>
 
         </div>

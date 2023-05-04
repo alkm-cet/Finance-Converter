@@ -15,12 +15,12 @@ function LeftSide() {
     handleAmount,
     handleExplanation,
     handleDatas,
-    totalIncome,
     amount,
     explanation,
     rates,
-    handleCurrencyType,
-    totalExpense } = useContext(FinanceContext)
+    currency1,
+    handleCurrency1Change,
+    financeArray } = useContext(FinanceContext)
 
 
 
@@ -38,9 +38,16 @@ function LeftSide() {
 
 
       <div className="totalBalanceContainer">
-        <h3>Total Income: {Number(totalIncome).toLocaleString()}</h3>
-        <h3>Total Expense: {Number(totalExpense).toLocaleString()}</h3>
+        <h3>Total Income: {financeArray.filter((item) => item.type === 'Income').reduce((acc, curr) => {
+          return acc + Number(curr.amount)
+        }, 0)}</h3>
+        <h3>Total Expense: {financeArray.filter((item) => item.type === 'Expense').reduce((acc, curr) => {
+          return acc + Number(curr.amount)
+        }, 0)}</h3>
       </div>
+
+
+
 
 
       {
@@ -52,11 +59,17 @@ function LeftSide() {
               <label htmlFor="amount">Amount</label>
               <input type="number" id='amount' className='dataInputs' value={amount} placeholder='Amount..' onChange={handleAmount} />
               <label>Currency Type</label>
-              <select className='dataInputs' onChange={handleCurrencyType}>
+              {/* <select className='dataInputs' onChange={handleCurrencyType}>
                 <option selected value="">Select Currency Type</option>
                 {
                   Object.keys(rates)?.map((rate, index) => <option key={index} value={rate}>{rate}</option>)
                 }
+              </select> */}
+
+              <select className='dataInputs' value={currency1} onChange={handleCurrency1Change}>
+                {Object.keys(rates)?.map((currency) => (
+                  <option value={currency}>{currency}</option>
+                ))}
               </select>
               <label htmlFor="amount">Explanation</label>
               <input type="text" id='explanation' className='dataInputs' value={explanation} placeholder='Your note..' onChange={handleExplanation} maxLength={50} />

@@ -3,10 +3,7 @@ import axios from 'axios';
 
 export const FinanceContext = createContext();
 
-const url = 'https://api.apilayer.com/exchangerates_data/latest?&base=EUR&apikey=zwKm3tIP6ZheR6yn71VyINZssRxID0dc'
-
 function FinanceContextProvider({ children }) {
-
 
     const [balance, setBalance] = useState(0);
     const [totalIncome, setTotalIncome] = useState(0);
@@ -26,43 +23,41 @@ function FinanceContextProvider({ children }) {
     //-------------
     const [storedArray, setStoredArray] = useState([]);
     //-------------
-    const [rates, setRates] = useState([]);
-    const [currencyType, setCurrencyType] = useState('');
 
     //FETCH CURRENCY DATA------------------------
+
+    const [currencyType, setCurrencyType] = useState('');
+    const [amount1, setAmount1] = useState(1);
+    const [amount2, setAmount2] = useState(1);
+    const [currency1, setCurrency1] = useState("USD");
+    const [currency2, setCurrency2] = useState("USD");
+    const [rates, setRates] = useState([]);
+
     useEffect(() => {
-        try {
-            axios.get(url).then((response) => setRates(response.data.rates));
-            console.log(rates)
-        } catch (error) {
-            console.error(error)
-        }
-    }, [])
-    //---------------------------------------------------------------------
+        axios
+            .get(
+                `https://api.apilayer.com/exchangerates_data/latest?&base=EUR&apikey=zwKm3tIP6ZheR6yn71VyINZssRxID0dc`
+            )
+            .then((response) => setRates(response.data.rates));
+    }, []);
 
-    // useEffect(() => {
-    //     async function fetchCurrencies() {
-    //         const response = await axios.get(
-    //             `https://api.apilayer.com/fixer/symbols?apikey=zwKm3tIP6ZheR6yn71VyINZssRxID0dc`
-    //         );
-    //         setCurrencies(Object.keys(response.data.symbols));
-    //     }
+    function format(number) {
+        return number.toFixed(4);
+    }
 
-    //     fetchCurrencies();
-    // }, []);
+    function handleAmount1Change(event) {
+        const amount1 = event.target.value;
+        setAmount2(format((amount1 * rates[currency2]) / rates[currency1]));
+        setAmount1(amount1);
+    }
 
-    // const handleAmountChange = (event) => {
-    //     setCurAmount(event.target.value);
-    // };
-
-    // const handleCurrencyChange = async (event) => {
-    //     const currency = event.target.value;
-    //     const response = await axios.get(
-    //         `https://api.apilayer.com/fixer/convert?to=${currency}&from=USD&amount=${amount}&apikey=zwKm3tIP6ZheR6yn71VyINZssRxID0dc`
-    //     );
-    //     setConvertedAmount(response.data.result);
-    //     setCurrencyType(event.target.value)
-    // };
+    function handleCurrency1Change(event) {
+        const currency1 = event.target.value;
+        setAmount2(format((amount1 * rates[currency2]) / rates[currency1]));
+        setCurrency1(currency1);
+        setCurrencyType(event.target.value);
+        console.log(currencyType);
+    }
 
     //HANDLE POPUP--------------------------
     const handlePopup = (e) => {
@@ -74,11 +69,13 @@ function FinanceContextProvider({ children }) {
     //HANDLE AMOUNT-------------------------
     const handleAmount = (e) => {
         setAmount(e.target.value)
+        handleAmount1Change(e)// veri girildiğinde amountchance i de tetiklicek
     }
 
     //HANDLE NEWAMOUNT---------------
     const handleNewAmount = (e) => {
         setNewAmount(e.target.value)
+
     }
 
     //HANDLE EXPLANATİON------------------
@@ -91,20 +88,15 @@ function FinanceContextProvider({ children }) {
         setNewExplanation(e.target.value)
     }
 
-    //HANDLE CURRENCY TYPE-----------------
-    const handleCurrencyType = (e) => {
-        setCurrencyType(e.target.value)
-    }
-    console.log(currencyType)
-
     //HANDLE DATAS-------------------------
+
     const handleDatas = () => {
-        if (amount !== 0 && amount !== '' && currencyType !== '' && explanation !== '') {
+        if (amount !== 0 && amount !== '' && explanation !== '') {
             let date = new Date();
             let createdAt = date.getTime();
             let id = Math.floor(Math.random() * 1000000)
 
-            setFinanceArray([...financeArray,
+            const newFinanceArray = [...financeArray,
             {
                 id,
                 type: dataType,
@@ -112,25 +104,21 @@ function FinanceContextProvider({ children }) {
                 explanation: explanation,
                 currencyType: currencyType,
                 createdAt,
-            }
-            ]);
-
-            if (dataType === "Income") {
-                setBalance(balance + Number(amount))
-                setTotalIncome(totalIncome + Number(amount))
-            } else if (dataType === "Expense") {
-                setBalance(balance - Number(amount))
-                setTotalExpense(totalExpense + Number(amount))
-            }
-
+            }]
+            setFinanceArray(newFinanceArray);
             setPopup(false);
             setAmount(0);
             setExplanation('');
-
+            localStorage.setItem('financeArray', JSON.stringify(newFinanceArray));
         } else {
             alert('Fill all the blanks!')
         }
-    }
+    };
+
+    useEffect(() => {
+        const savedArray = localStorage.getItem('financeArray');
+        setFinanceArray(savedArray ? JSON.parse(savedArray) : [])
+    }, []);
 
     // DELETE DATA--------------------------
     const handleDelete = (index) => {
@@ -145,8 +133,10 @@ function FinanceContextProvider({ children }) {
         }
 
         const newList = [...financeArray];
-        newList.splice(index, 1)
-        setFinanceArray(newList)
+        newList.splice(index, 1);
+        setFinanceArray(newList);
+
+        localStorage.setItem('financeArray', JSON.stringify(newList))
     };
 
     //ADJUST DATA -----------------------------
@@ -171,6 +161,7 @@ function FinanceContextProvider({ children }) {
                 const newFinanceArray = [...prevFinanceArray];
                 const editedItem = { ...newFinanceArray[index], amount: newAmount, explanation: newExplanation };
                 newFinanceArray[index] = editedItem;
+                localStorage.setItem('financeArray', JSON.stringify(newFinanceArray))
                 return newFinanceArray;
             });
             setEditPopup(false)
@@ -205,6 +196,7 @@ function FinanceContextProvider({ children }) {
                 handleAmount,
                 handleExplanation,
                 financeArray,
+                // savedFinanceArray,
                 handleDatas,
                 handleDelete,
                 handleAdjustment,
@@ -220,8 +212,14 @@ function FinanceContextProvider({ children }) {
                 storedArray,
                 defaultValue,
                 defaulExplanation,
-                handleCurrencyType,
+                // handleCurrencyType,
                 rates,
+                amount1,
+                handleAmount1Change,
+                amount2,
+                currency1,
+                handleCurrency1Change,
+
             }}>
             {children}
         </FinanceContext.Provider>
