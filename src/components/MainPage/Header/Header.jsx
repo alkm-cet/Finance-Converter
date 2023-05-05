@@ -11,7 +11,6 @@ function Header() {
     const { financeArray } = useContext(FinanceContext)
 
     const handleConvertTotal = (currencyType) => {
-        // Euro bazında değerleri hesapla
         const currencyDataInEuro = {};
         Object.keys(currencyData).forEach((currency) => {
             currencyDataInEuro[currency] = 1 / currencyData[currency];

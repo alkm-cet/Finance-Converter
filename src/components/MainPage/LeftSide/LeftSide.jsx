@@ -24,8 +24,6 @@ function LeftSide() {
     currencyType } = useContext(FinanceContext)
 
   const handleConvertIncome = (currencyType) => {
-
-    // Euro bazında değerleri hesapla
     const currencyDataInEuro = {};
     Object.keys(currencyData).forEach((currency) => {
       currencyDataInEuro[currency] = 1 / currencyData[currency];
@@ -44,7 +42,6 @@ function LeftSide() {
 
 
   const handleConvertExpense = (currencyType) => {
-
     const currencyDataInEuro = {};
     Object.keys(currencyData).forEach((currency) => {
       currencyDataInEuro[currency] = 1 / currencyData[currency];
