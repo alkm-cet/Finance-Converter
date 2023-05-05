@@ -5,6 +5,8 @@ import { FinanceContext } from '../../../context/FinanceContext';
 //IMAGES
 import plus from '../../../images/plus.png';
 import minus from '../../../images/minus.png';
+//Currency.Json
+import currencyData from '../../../Currency.json';
 
 function LeftSide() {
 
@@ -14,15 +16,38 @@ function LeftSide() {
     dataType,
     handleAmount,
     handleExplanation,
+    handleCurrencyType,
     handleDatas,
     amount,
     explanation,
-    rates,
-    currency1,
-    handleCurrency1Change,
-    financeArray } = useContext(FinanceContext)
+    financeArray,
+    currencyType } = useContext(FinanceContext)
 
+  const handleConvertIncome = (currencyType) => {
 
+    let totalAmountOfArray = financeArray.filter((item) => item.type === 'Income').reduce((acc, curr) => {
+      return acc + Number(curr.amount)
+    }, 0)
+
+    let valueOfCurrency = currencyData[currencyType];
+
+    const convertedAmount = totalAmountOfArray * valueOfCurrency;
+    return (convertedAmount).toLocaleString();
+
+  }
+
+  const handleConvertExpense = (currencyType) => {
+
+    let totalAmountOfArray = financeArray.filter((item) => item.type === 'Expense').reduce((acc, curr) => {
+      return acc + Number(curr.amount)
+    }, 0)
+
+    let valueOfCurrency = currencyData[currencyType];
+
+    const convertedAmount = totalAmountOfArray * valueOfCurrency;
+    return (convertedAmount).toLocaleString();
+
+  }
 
   return (
     <div className='LeftSide'>
@@ -38,17 +63,9 @@ function LeftSide() {
 
 
       <div className="totalBalanceContainer">
-        <h3>Total Income: {financeArray.filter((item) => item.type === 'Income').reduce((acc, curr) => {
-          return acc + Number(curr.amount)
-        }, 0)}</h3>
-        <h3>Total Expense: {financeArray.filter((item) => item.type === 'Expense').reduce((acc, curr) => {
-          return acc + Number(curr.amount)
-        }, 0)}</h3>
+        <h3>Total Income: {handleConvertIncome(financeArray[financeArray.length - 1]?.currencyType)} {financeArray[financeArray.length - 1]?.currencyType} </h3>
+        <h3>Total Expense: {handleConvertExpense(financeArray[financeArray.length - 1]?.currencyType)} {financeArray[financeArray.length - 1]?.currencyType}</h3>
       </div>
-
-
-
-
 
       {
         popup
@@ -59,15 +76,8 @@ function LeftSide() {
               <label htmlFor="amount">Amount</label>
               <input type="number" id='amount' className='dataInputs' value={amount} placeholder='Amount..' onChange={handleAmount} />
               <label>Currency Type</label>
-              {/* <select className='dataInputs' onChange={handleCurrencyType}>
-                <option selected value="">Select Currency Type</option>
-                {
-                  Object.keys(rates)?.map((rate, index) => <option key={index} value={rate}>{rate}</option>)
-                }
-              </select> */}
-
-              <select className='dataInputs' value={currency1} onChange={handleCurrency1Change}>
-                {Object.keys(rates)?.map((currency) => (
+              <select className='dataInputs' value={currencyType} onChange={handleCurrencyType}>
+                {Object.keys(currencyData).map((currency) => (
                   <option value={currency}>{currency}</option>
                 ))}
               </select>
