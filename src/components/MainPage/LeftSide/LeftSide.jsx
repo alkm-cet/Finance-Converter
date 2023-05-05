@@ -36,7 +36,11 @@ function LeftSide() {
     });
 
     const totalValueInGivenCurrency = totalAmountOfArrayInEuro * currencyData[currencyType];
-    return totalValueInGivenCurrency.toFixed(3);
+    if (totalValueInGivenCurrency) {
+      return totalValueInGivenCurrency.toFixed(3);
+    } else {
+      return '-'
+    }
 
   }
 
@@ -54,7 +58,11 @@ function LeftSide() {
     });
 
     const totalValueInGivenCurrency = totalAmountOfArrayInEuro * currencyData[currencyType];
-    return totalValueInGivenCurrency.toFixed(3);
+    if (totalValueInGivenCurrency) {
+      return totalValueInGivenCurrency.toFixed(3);
+    } else {
+      return '-'
+    }
 
   }
 

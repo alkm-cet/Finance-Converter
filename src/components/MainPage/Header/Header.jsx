@@ -23,7 +23,12 @@ function Header() {
         });
 
         const totalValueInGivenCurrency = totalAmountOfArrayInEuro * currencyData[currencyType];
-        return totalValueInGivenCurrency.toFixed(3);
+
+        if (totalValueInGivenCurrency) {
+            return totalValueInGivenCurrency.toFixed(3);
+        } else {
+            return '-'
+        }
     };
 
     return (
