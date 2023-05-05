@@ -22,42 +22,7 @@ function FinanceContextProvider({ children }) {
     const [defaulExplanation, setDefaultExplanation] = useState("")
     //-------------
     const [storedArray, setStoredArray] = useState([]);
-    //-------------
-    
-    //FETCH CURRENCY DATA------------------------
-
     const [currencyType, setCurrencyType] = useState('');
-    const [amount1, setAmount1] = useState(1);
-    const [amount2, setAmount2] = useState(1);
-    const [currency1, setCurrency1] = useState("USD");
-    const [currency2, setCurrency2] = useState("USD");
-    const [rates, setRates] = useState([]);
-
-    // useEffect(() => {
-    //     axios
-    //         .get(
-    //             `https://api.apilayer.com/exchangerates_data/latest?&base=EUR&apikey=zwKm3tIP6ZheR6yn71VyINZssRxID0dc`
-    //         )
-    //         .then((response) => setRates(response.data.rates));
-    // }, []);
-
-    // function format(number) {
-    //     return number.toFixed(4);
-    // }
-
-    // function handleAmount1Change(event) {
-    //     const amount1 = event.target.value;
-    //     setAmount2(format((amount1 * rates[currency2]) / rates[currency1]));
-    //     setAmount1(amount1);
-    // }
-
-    // function handleCurrency1Change(event) {
-    //     const currency1 = event.target.value;
-    //     setAmount2(format((amount1 * rates[currency2]) / rates[currency1]));
-    //     setCurrency1(currency1);
-    //     setCurrencyType(event.target.value);
-    //     console.log(currencyType);
-    // }
 
     //--------------------------
     function handleCurrencyType(e) {
@@ -200,7 +165,6 @@ function FinanceContextProvider({ children }) {
                 handleAmount,
                 handleExplanation,
                 financeArray,
-                // savedFinanceArray,
                 handleDatas,
                 handleDelete,
                 handleAdjustment,
@@ -218,12 +182,6 @@ function FinanceContextProvider({ children }) {
                 defaulExplanation,
                 handleCurrencyType,
                 currencyType,
-                rates,
-                amount1,
-                // handleAmount1Change,
-                amount2,
-                currency1,
-                // handleCurrency1Change,
 
             }}>
             {children}

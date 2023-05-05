@@ -25,27 +25,39 @@ function LeftSide() {
 
   const handleConvertIncome = (currencyType) => {
 
-    let totalAmountOfArray = financeArray.filter((item) => item.type === 'Income').reduce((acc, curr) => {
-      return acc + Number(curr.amount)
-    }, 0)
+    // Euro bazında değerleri hesapla
+    const currencyDataInEuro = {};
+    Object.keys(currencyData).forEach((currency) => {
+      currencyDataInEuro[currency] = 1 / currencyData[currency];
+    });
 
-    let valueOfCurrency = currencyData[currencyType];
+    let totalAmountOfArrayInEuro = 0;
+    financeArray.filter((item) => item.type === 'Income').forEach((item) => {
+      const itemValueInEuro = item.amount / currencyData[item.currencyType];
+      totalAmountOfArrayInEuro += item.type === 'Income' ? itemValueInEuro : -itemValueInEuro;
+    });
 
-    const convertedAmount = totalAmountOfArray * valueOfCurrency;
-    return (convertedAmount).toLocaleString();
+    const totalValueInGivenCurrency = totalAmountOfArrayInEuro * currencyData[currencyType];
+    return totalValueInGivenCurrency.toFixed(3);
 
   }
 
+
   const handleConvertExpense = (currencyType) => {
 
-    let totalAmountOfArray = financeArray.filter((item) => item.type === 'Expense').reduce((acc, curr) => {
-      return acc + Number(curr.amount)
-    }, 0)
+    const currencyDataInEuro = {};
+    Object.keys(currencyData).forEach((currency) => {
+      currencyDataInEuro[currency] = 1 / currencyData[currency];
+    });
 
-    let valueOfCurrency = currencyData[currencyType];
+    let totalAmountOfArrayInEuro = 0;
+    financeArray.filter((item) => item.type === 'Expense').forEach((item) => {
+      const itemValueInEuro = item.amount / currencyData[item.currencyType];
+      totalAmountOfArrayInEuro += item.type === 'Income' ? itemValueInEuro : -itemValueInEuro;
+    });
 
-    const convertedAmount = totalAmountOfArray * valueOfCurrency;
-    return (convertedAmount).toLocaleString();
+    const totalValueInGivenCurrency = totalAmountOfArrayInEuro * currencyData[currencyType];
+    return totalValueInGivenCurrency.toFixed(3);
 
   }
 

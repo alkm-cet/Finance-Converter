@@ -8,36 +8,24 @@ import dollar from '../../../images/dollar.png';
 import currencyData from '../../../Currency.json';
 
 function Header() {
-    const { financeArray, currencyType } = useContext(FinanceContext)
+    const { financeArray } = useContext(FinanceContext)
 
     const handleConvertTotal = (currencyType) => {
+        // Euro bazında değerleri hesapla
+        const currencyDataInEuro = {};
+        Object.keys(currencyData).forEach((currency) => {
+            currencyDataInEuro[currency] = 1 / currencyData[currency];
+        });
 
-        let totalAmountOfArray = financeArray.reduce((acc, curr) => {
-            return acc + (curr.amount * (curr.type === 'Income' ? 1 : -1))
-        }, 0);
+        let totalAmountOfArrayInEuro = 0;
+        financeArray.forEach((item) => {
+            const itemValueInEuro = item.amount / currencyData[item.currencyType];
+            totalAmountOfArrayInEuro += item.type === 'Income' ? itemValueInEuro : -itemValueInEuro;
+        });
 
-        let valueOfCurrency = currencyData[currencyType];
-
-        const convertedAmount = totalAmountOfArray * valueOfCurrency;
-
-        return (convertedAmount).toLocaleString();
-
-    }
-
-    // const handleConvertTotal = (currencyType) => {
-    //     let totalAmountOfArray = 0;
-
-    //     if (financeArray.length > 0) {
-    //         const lastCurrencyType = financeArray[financeArray.length - 1].currencyType;
-    //         const lastCurrencyValue = currencyData[lastCurrencyType] / currencyData[currencyType];
-    //         totalAmountOfArray = financeArray.reduce((acc, curr) => {
-    //             return acc + (curr.type === 'Income' ? curr.amount : -1 * curr.amount);
-    //         }, 0) * lastCurrencyValue;
-    //     }
-
-    //     return totalAmountOfArray.toLocaleString();
-    // };
-
+        const totalValueInGivenCurrency = totalAmountOfArrayInEuro * currencyData[currencyType];
+        return totalValueInGivenCurrency.toFixed(3);
+    };
 
     return (
         <div className='Header'>
